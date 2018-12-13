@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Capture Photo</title>
+        <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+        <script type="text/javascript" charset="utf-8">
+            var pictureSource;
+            var destinationType;
+            document.addEventListener("deviceready",onDeviceReady,false);
+            function onDeviceReady() {
+                pictureSource=navigator.camera.PictureSourceType;
+                destinationType=navigator.camera.DestinationType;
+            }
+        function onPhotoDataSuccess(imageData) {
+            console.log(imageData);
+            var smallImage = document.getElementById('smallImage');
+            smallImage.style.display = 'block';
+            smallImage.src = "data:image/jpeg;base64," + imageData;    }
+        function onPhotoURISuccess(imageURI) {
+            console.log(imageURI);
+            var largeImage = document.getElementById('largeImage');
+            largeImage.style.display = 'block';
+            largeImage.src = imageURI;    }
+        function capturePhoto() {
+            navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 50,        destinationType: destinationType.DATA_URL });    }
+        
+        function test() {
+
+            Notification.requestPermission(function (permission) {
+//                if (permission == "granted"){
+                    var notification = new Notification("123",{
+                        dir: "auto",
+                        lang: "zh-CN",
+                        tag: "testNotice",
+                        body: '456'
+                    });
+//                }else {
+//                    alert('11111 ');
+//                }
+
+
+            });
+//             Notification.requestPermission(function (permission) {
+//    if (permission == "granted") {
+//        var notification = new Notification("您有一条新的消息",{
+//            dir: "auto",
+//            lang: "zh-CN",
+//            tag: "testNotice",
+//            icon:'ant.png',
+//            body: '你好啊！我是蚂蚁，我在测试桌面推送'
+//                    });
+//            }
+
+        }
+        
+        function test1() {
+            //判断浏览器是否支持notification
+            if(window.webkitNotifications){
+                //判断当前页面是否被允许发出通知
+                if(webkitNotifications.checkPermission==0){
+                    var icon_url = 'http://www.w3.org/';
+                    var title = 'Hello HTML5';
+                    var body = 'I will be always here waiting for you!';
+                    var WebkitNotification = webkitNotifications.createNotification(icon_url, title, body);
+                    WebkitNotification.show();
+                }else{
+                    document.getElementById('requestbutton').onclick = function () {
+                        webkitNotifications.requestPermission();
+                    };
+                }
+            }else alert("ffffff");
+
+        }
+        function getPhoto(source) {
+            navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 50,        destinationType: destinationType.FILE_URI,        sourceType: source });    }
+        function onFail(message) {      alert('Failed because: ' + message);    }
+            </script>
+    </head>
+    <body>
+        <button onclick="capturePhoto();">Capture Photo</button> <br>
+        <button onclick="test();">test</button> <br>
+        <button onclick="test1();">test1</button> <br>
+        <button onclick="getPhoto(pictureSource.PHOTOLIBRARY);">From Photo Library</button><br>
+        <button onclick="getPhoto(pictureSource.SAVEDPHOTOALBUM);">From Photo Album</button><br>
+        <img style="display:none;width:60px;height:60px;" id="smallImage" src="" />
+        <img style="display:none;" id="largeImage" src="" />
+    </body>
+</html>
